@@ -2,7 +2,7 @@ const blessed = require('blessed');
 const mc = require('minecraft-protocol');
 const settings = require('./settings.js');
 
-let {screen, chat, label} = ui();
+let {screen, chat, input, label} = ui();
 let client = mc.createClient(settings.mc);
 client.on('success', onlogin);
 
@@ -14,7 +14,7 @@ function onlogin(){
   client.on('chat', function({message}) {
     if (message!='""'){
       let out = '';
-      let {extra, text=''} = JSON.parse(message);
+      let {extra=[], text=''} = JSON.parse(message);
       extra.forEach((text) => {
         if (text.hasOwnProperty('text')) out += text.text;
         else out += text;
@@ -22,6 +22,14 @@ function onlogin(){
       chat.pushLine(out + text);
       screen.render();
     }
+  });
+  input.key('enter', function() {
+    let msg = input.getValue();
+    if (msg === 'exit') return process.exit(0);
+    client.write('chat', {message: msg});
+    input.clearValue();
+    input.focus();
+    screen.render();
   });
 }
 function ui(){
@@ -67,17 +75,8 @@ function ui(){
   screen.append(input);
   screen.append(label);
 
-  input.key('enter', function() {
-    let msg = input.getValue();
-    if (msg === 'exit') return process.exit(0);
-    client.write('chat', {message: msg});
-    input.clearValue();
-    input.focus();
-    screen.render();
-  });
-
   input.focus();
   screen.render();
-  return {screen,chat,label};
+  return {screen, chat, label, input};
 }
 
