@@ -2,6 +2,8 @@ my minecraft chat client
 ---
 a simple minecraft console chat client
 
+requires [node.js](https://nodejs.org)
+
 setup
 ---
 [download](https://github.com/plexigras/mcchat/archive/master.zip) and unzip or clone this repository
