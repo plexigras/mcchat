@@ -25,8 +25,15 @@ function onlogin(){
   });
   input.key('enter', function() {
     let msg = input.getValue();
-    if (msg === 'exit') return process.exit(0);
-    client.write('chat', {message: msg});
+    switch (msg) {
+    case 'exit':
+      return process.exit(0);
+    case 'clear':
+      chat.setContent('');
+      break;
+    default:
+      client.write('chat', {message: msg});
+    }
     input.clearValue();
     input.focus();
     screen.render();
@@ -55,13 +62,15 @@ function ui(){
   };
    
   let label;
-  if (!settings.mc.hasOwnProperty('port')) label = ` ${settings.mc.host} `;
-  else label = ` ${settings.mc.host}:${settings.mc.port} `;
+  if (settings.mc.hasOwnProperty('port') && settings.mc.port != 25565)
+    label = ` ${settings.mc.host}:${settings.mc.port} `;
+  else label = ` ${settings.mc.host} `;
   let chat = blessed.log(Object.assign({bottom: 3, label},options));
   
   let input = blessed.textbox(Object.assign({
     height: 3,
     bottom: 0,
+    mouse: 'right',
     inputOnFocus: true
   },options));
   
