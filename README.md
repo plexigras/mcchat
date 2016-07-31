@@ -8,4 +8,6 @@ setup
 
 run "npm install" in the projekts directory
 
+edit setings.js file
+
 run "node main" in the projekts directory
